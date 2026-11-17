@@ -1,0 +1,6 @@
+{
+  "name": "উঠাও ঢাকা — Uthao Dhaka",
+  "description": "ঢাকার আকাশপথে লোকাল উড়োজাহাজ চালানোর ফান গেম: ছাদে অবতরণ, হেল্পারের হাঁকডাক, ভাড়া নিয়ে দর কষাকষি এবং নিচে ঢাকার আসল ট্রাফিক!",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
