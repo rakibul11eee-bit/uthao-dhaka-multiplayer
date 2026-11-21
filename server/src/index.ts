@@ -11,9 +11,14 @@ type Match = { matchId: string; players: [Player, Player]; createdAt: number; st
 const app = express();
 const httpServer = createServer(app);
 const port = Number(process.env.PORT ?? 4000);
-const allowedOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
+const allowedOrigins = [
+  process.env.CLIENT_ORIGIN || 'https://uthao-dhaka.web.app',
+  'http://localhost',
+  'https://localhost',
+  'capacitor://localhost',
+];
 const io = new SocketIOServer(httpServer, {
-  cors: { origin: allowedOrigin, methods: ['GET', 'POST'] },
+  cors: { origin: allowedOrigins, methods: ['GET', 'POST'] },
   transports: ['websocket', 'polling'],
 });
 const queue = new Map<string, Player>();
@@ -57,11 +62,19 @@ function finishMatch(match: Match, winnerUid: string | null, reason: 'TIME_UP' |
 app.disable('x-powered-by');
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (origin === allowedOrigin || !origin) res.setHeader('Access-Control-Allow-Origin', origin || allowedOrigin);
+
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin || allowedOrigins[0]);
+  }
+
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  if (req.method === 'OPTIONS') return res.sendStatus(204);
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
   next();
 });
 app.use(express.json({ limit: '16kb' }));
